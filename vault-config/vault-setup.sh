@@ -1,5 +1,6 @@
 #! /bin/sh
 # run commands in this script one by one to generate seed data 
+# ********** DO NOT EDIT ***********
 set -e
 
 export VAULT_ADDR=http://vault.localdomain:8200
@@ -24,6 +25,12 @@ echo $ROOT_KEY
 
 vault operator unseal $UNSEAL_KEY_BASE
 vault login $ROOT_KEY
+# ********** DO NOT EDIT ***********
+
+
+
+
+# ********** Edit from here ***********
 
 # enable vault transit engine
 vault secrets enable transit
@@ -58,11 +65,6 @@ myRole1ID=$(vault read auth/approle/role/myRole1/role-id -format=json | jq -r '.
 
 myRole1Secret=$(vault write -f auth/approle/role/myRole1/secret-id -format=json | jq -r '.data.secret_id')
 
-vault operator seal
-
-# create file increment of vault
-. /data/vault-setup-create-zip.sh
-
 # Add more keys if needed
 env="{
   \"unsealKey\": \"$UNSEAL_KEY_BASE\",
@@ -73,3 +75,9 @@ env="{
 }"
 echo $env
 echo $env > /data/env.json
+
+# ********** DO NOT EDIT ***********
+vault operator seal
+# create file increment of vault
+. /data/vault-setup-create-zip.sh
+# ********** DO NOT EDIT ***********
